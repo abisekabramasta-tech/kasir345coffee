@@ -47,5 +47,37 @@
     } catch(err) {
       console.warn('sheets-helper fallback: modal init failed', err);
     }
+
+    // Override loadDataFromSheets with a safe wrapper so UI code can call it without errors
+    try {
+      if (typeof window.loadDataFromSheets === 'function') {
+        const _origLoad = window.loadDataFromSheets;
+        window.loadDataFromSheets = async function(){
+          // If a real sheets helper exists, prefer calling original
+          if (window.__three4five_sheets && typeof window.__three4five_sheets.getMenu === 'function') {
+            try {
+              return await _origLoad();
+            } catch(e) {
+              console.error('loadDataFromSheets error (original):', e);
+              // fallback to rendering local menuList
+              try { renderMenu(); } catch(err){/* ignore */}
+            }
+          } else {
+            // No remote helper: render local menuList
+            try {
+              const menus = Array.isArray(window.menuList) ? window.menuList : [];
+              window.menuList = menus;
+              try { renderMenu(); } catch(err){}
+              return menus;
+            } catch(e) {
+              console.error('loadDataFromSheets fallback error', e);
+              try { renderMenu(); } catch(err){}
+            }
+          }
+        };
+      }
+    } catch(err) {
+      console.warn('sheets-helper fallback: override loadDataFromSheets failed', err);
+    }
   });
 })();
