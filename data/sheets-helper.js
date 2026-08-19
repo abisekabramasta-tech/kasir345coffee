@@ -1,83 +1,53 @@
-// Minimal sheets-helper fallback for kasir345coffee
-// Provides the functions the app expects so it works without Google Sheets
+// sheets-helper.js (client) - calls Apps Script Web App
+// Replaces the in-memory fallback so client talks to your deployed Apps Script.
 (function(){
-  if (window.__three4five_sheets) return;
+  const scriptTag = document.querySelector('script[src$="data/sheets-helper.js"]');
+  const urlAttr = scriptTag && scriptTag.getAttribute('data-app-script-url');
+  const configUrl = (window.__three4five_config && window.__three4five_config.APP_SCRIPT_URL) || urlAttr || '';
+  const APP_SCRIPT_URL = configUrl;
+
+  if (!APP_SCRIPT_URL) {
+    console.warn('sheets-helper: APP_SCRIPT_URL not configured, fallback only.');
+    return;
+  }
+
+  async function getJSON(url){
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('Network error: ' + r.status);
+    return r.json();
+  }
+
+  async function postJSON(body){
+    const r = await fetch(APP_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      cache: 'no-store'
+    });
+    if (!r.ok) {
+      const text = await r.text().catch(()=>'');
+      throw new Error('Network error: ' + r.status + ' ' + text);
+    }
+    return r.json();
+  }
 
   window.__three4five_sheets = {
     getMenu: async function(){
-      // Return persisted menuList if available, otherwise an empty array
-      try { return Array.isArray(window.menuList) ? window.menuList : []; } catch(e){ return []; }
+      const url = APP_SCRIPT_URL + '?action=getMenu';
+      const res = await getJSON(url);
+      return (res && res.menus) ? res.menus : [];
     },
 
     addMenu: async function(menu){
-      window.menuList = window.menuList || [];
-      window.menuList.push(menu);
-      return { ok: true };
+      return await postJSON({ action: 'addMenu', payload: menu });
     },
 
     saveMenu: async function(menu){
-      window.menuList = window.menuList || [];
-      const idx = window.menuList.findIndex(m => String(m.id) === String(menu.id));
-      if (idx !== -1) {
-        window.menuList[idx] = Object.assign({}, window.menuList[idx], menu);
-      } else {
-        window.menuList.push(menu);
-      }
-      return { ok: true };
+      return await postJSON({ action: 'saveMenu', payload: menu });
     },
 
     addTransaction: async function(trx){
-      window.__three4five_transactions = window.__three4five_transactions || [];
-      window.__three4five_transactions.push(trx);
-      return { ok: true };
+      return await postJSON({ action: 'addTransaction', payload: trx });
     }
   };
-
-  // Initialize Bootstrap modals once DOM is ready (bootstrap script in index.html is loaded before inline app script)
-  document.addEventListener('DOMContentLoaded', function(){
-    try {
-      if (window.bootstrap) {
-        if (document.getElementById('addMenuModal')) {
-          // avoid overwriting if app already created instances
-          if (!window.addMenuModalInstance) window.addMenuModalInstance = new bootstrap.Modal(document.getElementById('addMenuModal'));
-          if (!window.editMenuModalInstance) window.editMenuModalInstance = new bootstrap.Modal(document.getElementById('editMenuModal'));
-          if (!window.receiptModalInstance) window.receiptModalInstance = new bootstrap.Modal(document.getElementById('receiptModal'));
-        }
-      }
-    } catch(err) {
-      console.warn('sheets-helper fallback: modal init failed', err);
-    }
-
-    // Override loadDataFromSheets with a safe wrapper so UI code can call it without errors
-    try {
-      if (typeof window.loadDataFromSheets === 'function') {
-        const _origLoad = window.loadDataFromSheets;
-        window.loadDataFromSheets = async function(){
-          // If a real sheets helper exists, prefer calling original
-          if (window.__three4five_sheets && typeof window.__three4five_sheets.getMenu === 'function') {
-            try {
-              return await _origLoad();
-            } catch(e) {
-              console.error('loadDataFromSheets error (original):', e);
-              // fallback to rendering local menuList
-              try { renderMenu(); } catch(err){/* ignore */}
-            }
-          } else {
-            // No remote helper: render local menuList
-            try {
-              const menus = Array.isArray(window.menuList) ? window.menuList : [];
-              window.menuList = menus;
-              try { renderMenu(); } catch(err){}
-              return menus;
-            } catch(e) {
-              console.error('loadDataFromSheets fallback error', e);
-              try { renderMenu(); } catch(err){}
-            }
-          }
-        };
-      }
-    } catch(err) {
-      console.warn('sheets-helper fallback: override loadDataFromSheets failed', err);
-    }
-  });
 })();
