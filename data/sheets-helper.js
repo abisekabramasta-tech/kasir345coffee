@@ -1,5 +1,5 @@
 // sheets-helper.js (client) - calls Apps Script Web App
-// Replaces the in-memory fallback so client talks to your deployed Apps Script.
+// Uses form-encoded POST to avoid CORS preflight with Apps Script
 (function(){
   const scriptTag = document.querySelector('script[src$="data/sheets-helper.js"]');
   const urlAttr = scriptTag && scriptTag.getAttribute('data-app-script-url');
@@ -17,13 +17,19 @@
     return r.json();
   }
 
-  async function postJSON(body){
+  // Use form-encoded POST (application/x-www-form-urlencoded) to avoid CORS preflight
+  async function postForm(action, payload){
+    const form = new URLSearchParams();
+    form.append('action', action);
+    form.append('payload', JSON.stringify(payload || {}));
+
     const r = await fetch(APP_SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: form.toString(),
       cache: 'no-store'
     });
+
     if (!r.ok) {
       const text = await r.text().catch(()=>'');
       throw new Error('Network error: ' + r.status + ' ' + text);
@@ -39,15 +45,15 @@
     },
 
     addMenu: async function(menu){
-      return await postJSON({ action: 'addMenu', payload: menu });
+      return await postForm('addMenu', menu);
     },
 
     saveMenu: async function(menu){
-      return await postJSON({ action: 'saveMenu', payload: menu });
+      return await postForm('saveMenu', menu);
     },
 
     addTransaction: async function(trx){
-      return await postJSON({ action: 'addTransaction', payload: trx });
+      return await postForm('addTransaction', trx);
     }
   };
 })();
