@@ -329,119 +329,17 @@
     </div>
   </div>
 
-  <!-- MODAL EDIT MENU -->
-  <div class="modal fade" id="editMenuModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="border-radius:14px;border:0;overflow:hidden;box-shadow:0 12px 36px rgba(10,25,20,0.08)">
-        <div class="modal-header" style="background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;padding:18px 22px;border:0;">
-          <h5 class="modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">Edit Data Menu</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="form-edit-menu">
-          <div class="modal-body" style="padding:20px;">
-            <input type="hidden" id="edit-id">
-            <div class="mb-3">
-              <label class="form-label" style="font-size:12px;font-weight:700;color:var(--muted);">Nama Menu</label>
-              <input type="text" id="edit-name" class="form-control" required style="border-radius:10px;height:44px;font-size:13px;">
-            </div>
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label class="form-label" style="font-size:12px;font-weight:700;color:var(--muted);">Harga (Rp)</label>
-                <input type="number" id="edit-price" class="form-control" required min="0" style="border-radius:10px;height:44px;font-size:13px;">
-              </div>
-              <div class="col-6">
-                <label class="form-label" style="font-size:12px;font-weight:700;color:var(--muted);">Stok</label>
-                <input type="number" id="edit-stock" class="form-control" required min="0" style="border-radius:10px;height:44px;font-size:13px;">
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" style="font-size:12px;font-weight:700;color:var(--muted);">Kategori</label>
-              <select id="edit-category" class="form-select" style="border-radius:10px;height:44px;font-size:13px;">
-                <option value="ice-coffee">Ice Coffee</option>
-                <option value="americano">Americano</option>
-                <option value="non-coffee">Non Coffee</option>
-              </select>
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label" style="font-size:12px;font-weight:700;color:var(--muted);">Upload Gambar Menu Baru (Opsional)</label>
-              <div class="image-upload-wrapper" onclick="document.getElementById('edit-image-file').click()">
-                <input type="file" id="edit-image-file" accept="image/*" style="display:none" onchange="handleImageUpload(this,'edit-preview-container','edit-preview-img','edit-image-base64')">
-                <input type="hidden" id="edit-image-base64">
-                <div id="edit-upload-placeholder" class="hidden">
-                  <div style="font-size:26px;margin-bottom:4px">📁</div>
-                  <span style="font-size:12px;font-weight:700;color:var(--accent-2)">Klik untuk Ganti Gambar</span>
-                </div>
-                <div id="edit-preview-container" class="image-preview-container" style="margin-top:10px;position:relative;width:100%">
-                  <img id="edit-preview-img" src="" alt="Preview">
-                  <button type="button" class="btn-remove-preview" onclick="removeImageUpload(event,'edit-image-file','edit-preview-container','edit-upload-placeholder','edit-image-base64')" style="position:absolute;top:8px;right:8px;background:#ef4444;color:#fff;border:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold">×</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <div class="modal-footer" style="background:#f8fafc;border-top:1px solid var(--glass-border);padding:12px 18px;">
-            <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:10px;font-weight:600;font-size:13px;padding:9px 18px;">Batal</button>
-            <button type="submit" id="btn-save-menu" class="btn" style="background:var(--accent-2);color:#fff;border-radius:10px;font-weight:800;font-size:13px;padding:9px 18px;">Simpan Perubahan</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL RECEIPT -->
-  <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="border-radius:14px;overflow:hidden;border:0;box-shadow:0 12px 36px rgba(10,25,20,0.08)">
-        <div class="modal-header" style="background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;border:0;padding:16px 22px;">
-          <h5 class="modal-title" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">Transaksi Sukses</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="receipt-modal-body" style="padding:22px;display:flex;justify-content:center;">
-          <div class="receipt-paper" id="printable-receipt">
-            <div class="receipt-header">
-              <h3 style="margin:0;font-size:16px">Three4Five Coffee</h3>
-              <p style="margin:3px 0 0;font-size:12px;color:#444">Jl. Raya Utama No. 345</p>
-              <p style="margin:2px 0 0;font-size:12px;color:#444">Telp: 0812-3456-7890</p>
-            </div>
-            <div class="receipt-info" style="border-bottom:1px dashed #eee;padding-bottom:10px;margin-bottom:12px;font-size:12px;color:#222">
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>No. Nota:</span><strong id="rec-id">#TRX-000</strong></div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Tgl:</span><span id="rec-date">18/08/2026 12:00</span></div>
-              <div style="display:flex;justify-content:space-between"><span>Metode:</span><span id="rec-method">Tunai</span></div>
-            </div>
-            <table class="receipt-table" style="width:100%;border-collapse:collapse;margin-bottom:12px">
-              <tbody id="rec-items"></tbody>
-            </table>
-            <div class="receipt-totals" style="margin-bottom:12px;border-bottom:1px dashed #eee;padding-bottom:10px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Total:</span><strong id="rec-total">Rp 0</strong></div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Bayar:</span><span id="rec-cash">Rp 0</span></div>
-              <div style="display:flex;justify-content:space-between"><span>Kembali:</span><span id="rec-change">Rp 0</span></div>
-            </div>
-            <div class="receipt-footer" style="text-align:center;font-size:11px;margin-top:12px;color:#333">
-              <p style="margin:0">*** TERIMA KASIH ***</p>
-              <p style="margin:4px 0 0">Selamat Menikmati Kopi Anda</p>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer" style="background:#fff;border-top:1px solid var(--glass-border);padding:12px 18px;">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:10px;font-weight:600;padding:9px 18px">Tutup</button>
-          <button type="button" class="btn" onclick="window.print()" style="background:var(--accent-2);color:#fff;border-radius:10px;font-weight:800;padding:9px 18px">🖨️ Cetak Nota</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Configuration & Original Scripts (kept intact) -->
   <script>
+    // Mengarahkan APP_SCRIPT_URL ke URL `script.googleusercontent.com/echo` yang sudah terbukti mengembalikan JSON
     window.__three4five_config = {
-      APP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzCE4OE9MF42BnOeqOh-co2HvKpEepx0D7LAHqE0Ib3ERCyJTc6VrRflCMBuf5XIPH0Ug/exec',
+      APP_SCRIPT_URL: 'https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQPdeY3riTLGwdSuwQ_I7d43uVuoUQb905waNwWJONneJNUcxLao4ggY9DIfad04biTrZfF8kEWExnq6e_W6d1lJfqmrnv0r9kpdydOY3vz2QcpS_CYOUJKV34oUy2dQBfo5xgwCxa19qsubO0NrEX5FMAcjAvVx5vEy6qpAbCem1lx2Hl5YUFEEarzq-BnYzaF9K8-FLICJ-byI_NB3eDFmPnj7fnz0FBtkCkrbgLmtkVW7zQUtNOJmil5yiQoF6zQ5gqCr8zoUcYFvRk8suwKEdXgkYPZbD_-jFBodDgru_A18ME&lib=MthYqc43a8WQ4ZD_RT3kFszt61C08cuSi',
       forceSyncOnLoad: true
     };
   </script>
 
   <script src="data/sheets-helper.js"
-          data-app-script-url="https://script.google.com/macros/s/AKfycbx1gPtb2b_BQRxcp9kuybm7mg9d35axKerBXPX_4Qt6oLHbfq3Ft_8wUlpRArZ9RchvMA/exec"></script>
+          data-app-script-url="https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQPdeY3riTLGwdSuwQ_I7d43uVuoUQb905waNwWJONneJNUcxLao4ggY9DIfad04biTrZfF8kEWExnq6e_W6d1lJfqmrnv0r9kpdydOY3vz2QcpS_CYOUJKV34oUy2dQBfo5xgwCxa19qsubO0NrEX5FMAcjAvVx5vEy6qpAbCem1lx2Hl5YUFEEarzq-BnYzaF9K8-FLICJ-byI_NB3eDFmPnj7fnz0FBtkCkrbgLmtkVW7zQUtNOJmil5yiQoF6zQ5gqCr8zoUcYFvRk8suwKEdXgkYPZbD_-jFBodDgru_A18ME&lib=MthYqc43a8WQ4ZD_RT3kFszt61C08cuSi"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
