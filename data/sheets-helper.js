@@ -2,7 +2,7 @@
 // Uses form-encoded POST to avoid CORS preflight with Apps Script
 (function(){
   // OVERRIDE: force using the provided Apps Script URL
-  const OVERRIDE_URL = 'https://script.google.com/macros/library/d/17JaNjTWM4Tv9h2fckx7ziD5ctLwHUpmfLhqo1mJPUlM4k58grH4K5sAb/8';
+  const OVERRIDE_URL = 'https://script.google.com/macros/s/AKfycbx1gPtb2b_BQRxcp9kuybm7mg9d35axKerBXPX_4Qt6oLHbfq3Ft_8wUlpRArZ9RchvMA/exec';
 
   const scriptTag = document.querySelector('script[src$="data/sheets-helper.js"]');
   const urlAttr = scriptTag && scriptTag.getAttribute('data-app-script-url');
