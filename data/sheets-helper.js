@@ -1,10 +1,13 @@
 // sheets-helper.js (client) - calls Apps Script Web App
 // Uses form-encoded POST to avoid CORS preflight with Apps Script
 (function(){
+  // OVERRIDE: force using the provided Apps Script URL
+  const OVERRIDE_URL = 'https://script.google.com/macros/s/AKfycbxoa3mbz0OZL0V6W0yKYtGjZCTkDtDv2jI4FLThZQMb1iGA0reqHKVrqAQEL7acGOXpow/exec';
+
   const scriptTag = document.querySelector('script[src$="data/sheets-helper.js"]');
   const urlAttr = scriptTag && scriptTag.getAttribute('data-app-script-url');
   const configUrl = (window.__three4five_config && window.__three4five_config.APP_SCRIPT_URL) || urlAttr || '';
-  const APP_SCRIPT_URL = configUrl;
+  const APP_SCRIPT_URL = OVERRIDE_URL || configUrl;
 
   if (!APP_SCRIPT_URL) {
     console.warn('sheets-helper: APP_SCRIPT_URL not configured, fallback only.');
